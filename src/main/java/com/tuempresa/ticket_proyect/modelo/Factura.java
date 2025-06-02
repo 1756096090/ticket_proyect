@@ -18,6 +18,8 @@ public class Factura {
 
     @Id
     @Column(name="idFactura")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Hidden
     private Long idFactura;
     
     @ManyToOne(optional=false, fetch=FetchType.LAZY)

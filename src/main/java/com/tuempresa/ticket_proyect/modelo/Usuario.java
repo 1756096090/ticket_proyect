@@ -7,17 +7,20 @@ import javax.persistence.*;
 import org.openxava.annotations.*;
 
 @Entity
-@Tab(properties="nombre, mail, sede, activo, rol")
+@Tab(properties="idUsuario, nombre, mail, sede, activo, rol")
 @View(members=
+    "idUsuario;  " +                         // Incluimos el ID en la vista para poder escribirlo manualmente
     "nombre, mail, sede, activo;" +
     "rol;" +
-    "Asignaciones { asignaciones } " + 
-    "Facturas { facturas }"
+    "Asignaciones { asignaciones } " +
+    "Facturas     { facturas }"
 )
 public class Usuario {
 
     @Id
+    // Hemos quitado @GeneratedValue para que no espere auto‐increment desde BD
     @Column(name="idUsuario")
+    @Required          // Para que sea obligatorio en la UI
     private Long idUsuario;
     
     @Column(length=100, nullable=false)
@@ -35,17 +38,17 @@ public class Usuario {
     @Column(length=50)
     private String rol;
     
-    // Relación con Asignación (un usuario puede tener varias asignaciones)
     @OneToMany(mappedBy="usuario", fetch=FetchType.LAZY)
     @ListProperties("ticket.asunto, fechaSolicitud, horaSolicitud")
     private Collection<Asignacion> asignaciones;
     
-    // Relación con Factura (un usuario puede generar varias facturas)
     @OneToMany(mappedBy="usuario", fetch=FetchType.LAZY)
     @ListProperties("ticket.asunto, subtotal, iva, impuesto")
     private Collection<Factura> facturas;
 
+    // ——————————————
     // Getters y Setters
+    // ——————————————
 
     public Long getIdUsuario() {
         return idUsuario;
@@ -110,4 +113,5 @@ public class Usuario {
     public void setFacturas(Collection<Factura> facturas) {
         this.facturas = facturas;
     }
+
 }

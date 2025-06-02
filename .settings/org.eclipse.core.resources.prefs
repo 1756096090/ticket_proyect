@@ -1,5 +1,8 @@
 eclipse.preferences.version=1
 encoding//src/main/java=ISO-8859-1
+encoding//src/main/java/com/tuempresa/ticket_proyect/modelo/Tarifa.java=UTF-8
+encoding//src/main/java/com/tuempresa/ticket_proyect/modelo/Ticket.java=UTF-8
+encoding//src/main/java/com/tuempresa/ticket_proyect/modelo/Usuario.java=UTF-8
 encoding//src/main/resources=ISO-8859-1
 encoding//src/test/resources=ISO-8859-1
 encoding/<project>=ISO-8859-1

@@ -1,6 +1,5 @@
 package com.tuempresa.ticket_proyect.modelo;
 
-import java.math.*;
 import java.util.*;
 
 import javax.persistence.*;
@@ -8,18 +7,19 @@ import javax.persistence.*;
 import org.openxava.annotations.*;
 
 @Entity
-@Tab(properties="asunto, estado, prioridad, fechaCreacion, fechaCierre, costo")
+@Tab(properties="asunto, estado, prioridad, fechaCreacion, fechaCierre")
 @View(members=
     "asunto, estado, prioridad;" +
     "fechaCreacion, fechaCierre;" +
-    "costo;" +
     "descripcion;" +
     "Asignaciones { asignaciones } " +
-    "Facturas { facturas }"
+    "Facturas     { facturas }"
 )
 public class Ticket {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Hidden
     @Column(name="idTicket")
     private Long idTicket;
     
@@ -44,10 +44,10 @@ public class Ticket {
     @Column(length=50)
     private String prioridad;
     
-
-    @Column(precision=12, scale=2)
-    private BigDecimal costo;
-    
+    // Si quisieras en el futuro asociar una tarifa específica al ticket:
+    // @ManyToOne(fetch=FetchType.LAZY)
+    // @JoinColumn(name="idTarifa")
+    // private Tarifa tarifa;
 
     @OneToMany(mappedBy="ticket", fetch=FetchType.LAZY)
     @ListProperties("usuario.nombre, fechaSolicitud, horaSolicitud")
@@ -57,7 +57,9 @@ public class Ticket {
     @ListProperties("usuario.nombre, subtotal, iva, impuesto")
     private Collection<Factura> facturas;
 
+    // ——————————————
     // Getters y Setters
+    // ——————————————
 
     public Long getIdTicket() {
         return idTicket;
@@ -115,14 +117,6 @@ public class Ticket {
         this.prioridad = prioridad;
     }
 
-    public BigDecimal getCosto() {
-        return costo;
-    }
-
-    public void setCosto(BigDecimal costo) {
-        this.costo = costo;
-    }
-
     public Collection<Asignacion> getAsignaciones() {
         return asignaciones;
     }
@@ -138,4 +132,12 @@ public class Ticket {
     public void setFacturas(Collection<Factura> facturas) {
         this.facturas = facturas;
     }
+
+    // Si en el futuro decides relacionar directamente una tarifa:
+    // public Tarifa getTarifa() {
+    //     return tarifa;
+    // }
+    // public void setTarifa(Tarifa tarifa) {
+    //     this.tarifa = tarifa;
+    // }
 }
