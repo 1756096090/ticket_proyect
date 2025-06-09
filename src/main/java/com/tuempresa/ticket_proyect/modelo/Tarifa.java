@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+import lombok.*;
+
 /**
  * Entidad que almacena las tarifas generales (por urgencia, especialista, etc.).
  */
@@ -16,6 +18,10 @@ import org.openxava.annotations.*;
     "tipoUrgencia, especialista;" +
     "precio"
 )
+
+@Getter
+@Setter
+
 public class Tarifa {
 
     @Id
@@ -53,47 +59,5 @@ public class Tarifa {
     @Column(nullable=false, precision=12, scale=2)
     private BigDecimal precio;
 
-    // ——————————————————————————
-    // Getters y Setters
-    // ——————————————————————————
-
-    public Long getIdTarifa() {
-        return idTarifa;
-    }
-
-    public void setIdTarifa(Long idTarifa) {
-        this.idTarifa = idTarifa;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getEspecialista() {
-        return especialista;
-    }
-
-    public void setEspecialista(String especialista) {
-        this.especialista = especialista;
-    }
-
-    public TipoUrgencia getTipoUrgencia() {
-        return tipoUrgencia;
-    }
-
-    public void setTipoUrgencia(TipoUrgencia tipoUrgencia) {
-        this.tipoUrgencia = tipoUrgencia;
-    }
-
-    public BigDecimal getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(BigDecimal precio) {
-        this.precio = precio;
-    }
+    
 }

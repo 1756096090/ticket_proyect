@@ -7,66 +7,40 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+import lombok.*;
+
 @Entity
-@IdClass(AsignacionId.class)
-@View(members=
-    "usuario;" +
-    "ticket;" + 
-    "fechaSolicitud, horaSolicitud"
+@View(members = 
+    "Datos de Asignación { usuario, ticket };" +
+    "Tiempos            { fechaAsignacion, horaAsignacion }"
 )
+@Getter @Setter
 public class Asignacion implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="idUsuario")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idAsignacion;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "idUsuario")
     private Usuario usuario;
 
-    @Id
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="idTicket")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "idTicket")
     private Ticket ticket;
-    
-    @Column(nullable=false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaSolicitud;
-    
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date horaSolicitud;
 
-    // Getters y Setters
+    /** Fecha (solo día), por defecto hoy */
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    @DefaultValueCalculator(com.tuempresa.ticket_proyect.calculadores.FechaActualCalculator.class)
+    private Date fechaAsignacion;
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
+    /** Hora (solo hora), por defecto hora actual */
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIME)
+    @DefaultValueCalculator(com.tuempresa.ticket_proyect.calculadores.HoraActualCalculator.class)
+    private Date horaAsignacion;
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Ticket getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    public Date getFechaSolicitud() {
-        return fechaSolicitud;
-    }
-
-    public void setFechaSolicitud(Date fechaSolicitud) {
-        this.fechaSolicitud = fechaSolicitud;
-    }
-
-    public Date getHoraSolicitud() {
-        return horaSolicitud;
-    }
-
-    public void setHoraSolicitud(Date horaSolicitud) {
-        this.horaSolicitud = horaSolicitud;
-    }
 }

@@ -6,112 +6,41 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+import lombok.*;
+
 @Entity
-@Tab(properties="idUsuario, nombre, mail, sede, activo, rol")
-@View(members=
-    "idUsuario;  " +                         // Incluimos el ID en la vista para poder escribirlo manualmente
-    "nombre, mail, sede, activo;" +
-    "rol;" +
-    "Asignaciones { asignaciones } " +
-    "Facturas     { facturas }"
+@Tab(properties = "nombre, mail, sede, activo, rol")
+@View(members =
+    "Datos Personales { nombre, mail; sede, rol; activo };" +
+    "Asignaciones         { asignaciones }"
 )
+@Getter @Setter
 public class Usuario {
 
     @Id
-    // Hemos quitado @GeneratedValue para que no espere auto‐increment desde BD
-    @Column(name="idUsuario")
-    @Required          // Para que sea obligatorio en la UI
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "idUsuario")
     private Long idUsuario;
-    
-    @Column(length=100, nullable=false)
+
+    @Column(length = 50, nullable = false)
     private String nombre;
-    
-    @Column(length=100, nullable=false)
+
+    @Column(length = 50, nullable = false)
     private String mail;
-    
-    @Column(length=100)
-    private String sede;
-    
-    @Column
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    @Required
+    private Sede sede;
+
+    @Column(nullable = false)
     private boolean activo;
-    
-    @Column(length=50)
-    private String rol;
-    
-    @OneToMany(mappedBy="usuario", fetch=FetchType.LAZY)
-    @ListProperties("ticket.asunto, fechaSolicitud, horaSolicitud")
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private Rol rol;
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ListProperties("ticket.asunto, fechaAsignacion, horaAsignacion")
     private Collection<Asignacion> asignaciones;
-    
-    @OneToMany(mappedBy="usuario", fetch=FetchType.LAZY)
-    @ListProperties("ticket.asunto, subtotal, iva, impuesto")
-    private Collection<Factura> facturas;
-
-    // ——————————————
-    // Getters y Setters
-    // ——————————————
-
-    public Long getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Long idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public String getSede() {
-        return sede;
-    }
-
-    public void setSede(String sede) {
-        this.sede = sede;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
-
-    public Collection<Asignacion> getAsignaciones() {
-        return asignaciones;
-    }
-
-    public void setAsignaciones(Collection<Asignacion> asignaciones) {
-        this.asignaciones = asignaciones;
-    }
-
-    public Collection<Factura> getFacturas() {
-        return facturas;
-    }
-
-    public void setFacturas(Collection<Factura> facturas) {
-        this.facturas = facturas;
-    }
-
 }
