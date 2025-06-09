@@ -1,0 +1,74 @@
+# ----------------------------
+# Sistema operativo
+# ----------------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# Builds de Maven
+# ----------------------------
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# ----------------------------
+# Archivos de compilación Java
+# ----------------------------
+*.class
+*.jar
+*.war
+*.ear
+
+# ----------------------------
+# OpenXava
+# ----------------------------
+# Logs y directorios temporales de OpenXava
+xava.log
+/xava/logs/
+/xava/temp/
+/xava/tmp/
+/xava/checkout/
+/xava/report.pdf
+
+# Cualquier carpeta generada por el plug-in de despliegue
+# (por ejemplo, Tomcat exploded WARs)
+deployment/
+
+# ----------------------------
+# Eclipse
+# ----------------------------
+.settings/
+.eclipseconfiguration/
+/*.launch
+.metadata/
+bin/
+
+# ----------------------------
+# IntelliJ IDEA
+# ----------------------------
+.idea/
+*.iml
+*.iws
+out/
+
+# ----------------------------
+# NetBeans
+# ----------------------------
+nbproject/private/
+build/
+dist/
+
+# ----------------------------
+# VS Code
+# ----------------------------
+.vscode/
+
+# ----------------------------
+# Otros
+# --

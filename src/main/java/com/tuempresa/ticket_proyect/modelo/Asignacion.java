@@ -25,6 +25,7 @@ public class Asignacion implements Serializable {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "idUsuario")
+    @DefaultValueCalculator(com.tuempresa.ticket_proyect.calculadores.AsignadorProporcionalCalculator.class)
     private Usuario usuario;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
