@@ -13,6 +13,7 @@ import lombok.*;
 @View(members =
     "asunto, estado, prioridad;" +
     "fechaCreacion, fechaCierre;" +
+    "cliente;" +
     "descripcion;" +
     "Asignaciones { asignaciones }"
 )
@@ -50,8 +51,12 @@ public class Ticket {
     @Column(length = 20)
     private TipoUrgencia prioridad;
 
-    // ——————————————————————————————————————————————
-    // Reañadimos la colección de Asignaciones
+
+
+    @ManyToOne(optional = false)
+    @ReferenceView("Simple")
+    private Cliente cliente;
+
     @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ListProperties("usuario.nombre, fechaAsignacion, horaAsignacion")
     private Collection<Asignacion> asignaciones;

@@ -6,12 +6,14 @@ import javax.persistence.*;
 
 import org.openxava.annotations.*;
 
+import com.tuempresa.ticket_proyect.calculadores.*;
+
 import lombok.*;
 
 @Entity
-@Tab(properties = "nombre, mail, sede, activo, rol")
+@Tab(properties = "nombre, cedula, mail, sede, activo")
 @View(members =
-    "Datos Personales { nombre, mail; sede, rol; activo };" +
+    "Datos Personales { nombre, cedula; mail; activo; especialidad };" +
     "Asignaciones         { asignaciones }"
 )
 @Getter @Setter
@@ -25,22 +27,28 @@ public class Usuario {
     @Column(length = 50, nullable = false)
     private String nombre;
 
+    @Column(length = 10, nullable = false, unique = true)
+    private String cedula;
+
     @Column(length = 50, nullable = false)
     private String mail;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    @Required
-    private Sede sede;
-
     @Column(nullable = false)
     private boolean activo;
-
+    
     @Enumerated(EnumType.STRING)
-    @Column(length = 50)
-    private Rol rol;
+    @Column(length = 50, nullable = false)
+    private Especialidad especialidad; // ← campo agregado
 
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ListProperties("ticket.asunto, fechaAsignacion, horaAsignacion")
     private Collection<Asignacion> asignaciones;
+
+    // Validación automática al guardar o actualizar
+    @PrePersist @PreUpdate
+    private void validarCedula() {
+        if (!ValidadorCedulaEcuador.validar(cedula)) {
+            throw new IllegalArgumentException("La cédula ingresada no es válida según las reglas ecuatorianas.");
+        }
+    }
 }
