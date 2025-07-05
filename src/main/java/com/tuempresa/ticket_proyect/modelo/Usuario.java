@@ -11,7 +11,7 @@ import com.tuempresa.ticket_proyect.calculadores.*;
 import lombok.*;
 
 @Entity
-@Tab(properties = "nombre, cedula, mail, sede, activo")
+@Tab(properties = "nombre, cedula, mail, activo")
 @View(members =
     "Datos Personales { nombre, cedula; mail; activo; especialidad };" +
     "Asignaciones         { asignaciones }"

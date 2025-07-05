@@ -9,8 +9,8 @@ import org.openxava.annotations.*;
 import lombok.*;
 
 @Entity
-@Tab(properties = 
-    "idFactura, asignacion.usuario.nombre, asignacion.ticket.asunto, " +
+@Tab(properties =
+    "idFactura, nombreUsuarioAsignado, asuntoTicketAsignado, " +
     "horasTrabajadas, subtotal, iva, impuesto")
 @View(members =
     "Cabecera [ asignacion ];" +
@@ -21,7 +21,7 @@ import lombok.*;
 @Getter @Setter
 public class Factura {
 
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Hidden
     private Long idFactura;
@@ -30,11 +30,26 @@ public class Factura {
     @ReferenceView("Simple")
     private Asignacion asignacion;
 
-    @Column(length = 500)
     @Stereotype("TEXTAREA")
     private String detalles;
 
-    /** Horas trabajadas, calculadas dinámicamente */
+    // Evita errores al mostrar asignacion.usuario.nombre en @Tab
+    @Depends("asignacion.usuario.nombre")
+    public String getNombreUsuarioAsignado() {
+        return (asignacion != null && asignacion.getUsuario() != null)
+            ? asignacion.getUsuario().getNombre()
+            : "(sin usuario)";
+    }
+
+    // Evita errores al mostrar asignacion.ticket.asunto en @Tab
+    @Depends("asignacion.ticket.asunto")
+    public String getAsuntoTicketAsignado() {
+        return (asignacion != null && asignacion.getTicket() != null)
+            ? asignacion.getTicket().getAsunto()
+            : "(sin ticket)";
+    }
+
+    /** Horas trabajadas, obtenidas de la Asignación */
     @ReadOnly
     @Depends("asignacion.horaInicioTicket, asignacion.horaFinTicket")
     public BigDecimal getHorasTrabajadas() {
@@ -51,16 +66,16 @@ public class Factura {
         BigDecimal tarifa = BigDecimal.ZERO;
 
         if (asignacion.getUsuario() != null) {
-            Especialidad esp = asignacion.getUsuario().getEspecialidad();
+            var esp = asignacion.getUsuario().getEspecialidad();
             if (esp != null) {
-                TarifaEspecialidad te = TarifaService.buscarPorEspecialidad(esp);
+                var te = TarifaService.buscarPorEspecialidad(esp);
                 if (te != null) tarifa = tarifa.add(te.getPrecio());
             }
         }
         if (asignacion.getTicket() != null) {
-            TipoUrgencia urg = asignacion.getTicket().getPrioridad();
+            var urg = asignacion.getTicket().getPrioridad();
             if (urg != null) {
-                TarifaTipoUrgencia tu = TarifaService.buscarPorUrgencia(urg);
+                var tu = TarifaService.buscarPorUrgencia(urg);
                 if (tu != null) tarifa = tarifa.add(tu.getPrecio());
             }
         }
@@ -81,4 +96,16 @@ public class Factura {
         return getSubtotal().add(getIva());
     }
 
+    // Setter personalizado para registrar en consola
+    public void setAsignacion(Asignacion asignacion) {
+        this.asignacion = asignacion;
+        if (asignacion == null) {
+            System.out.println("Factura: NO se recibió ninguna Asignación.");
+        } else if (asignacion.getHoraInicioTicket() == null || asignacion.getHoraFinTicket() == null) {
+            System.out.println("Factura: faltan datos de horaInicio o horaFin en la Asignación.");
+        } else {
+            BigDecimal horas = asignacion.getHorasTrabajadas();
+            System.out.println("Factura: horas trabajadas calculadas = " + horas);
+        }
+    }
 }
