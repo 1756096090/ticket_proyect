@@ -1,3 +1,4 @@
+// Asignacion.java
 package com.tuempresa.ticket_proyect.modelo;
 
 import java.io.*;
@@ -13,6 +14,7 @@ import org.openxava.annotations.*;
 import lombok.*;
 
 @Entity
+@Table(name = "Asignacion")
 @Views({
     @View(name = "Simple", members = "usuario, ticket"),
     @View(members =
@@ -31,12 +33,13 @@ public class Asignacion implements Serializable {
     private Long idAsignacion;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUsuario")
+    @JoinColumn(name = "idUsuario", nullable = false)
     @DefaultValueCalculator(com.tuempresa.ticket_proyect.calculadores.AsignadorProporcionalCalculator.class)
     private Usuario usuario;
 
+    // Y contra la columna idTicket
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idTicket")
+    @JoinColumn(name = "idTicket", nullable = false)
     private Ticket ticket;
 
     @Column(nullable = false)
@@ -49,44 +52,24 @@ public class Asignacion implements Serializable {
     @Stereotype("TIME")
     private String horaAsignacion;
 
-    @Column(length = 5)
-    @Stereotype("TIME")
+    @Column(length = 5) @Stereotype("TIME")
     private String horaInicioTicket;
 
-    @Column(length = 5)
-    @Stereotype("TIME")
+    @Column(length = 5) @Stereotype("TIME")
     private String horaFinTicket;
 
-    /**
-     * Parsea las cadenas HH:mm y calcula la diferencia en horas.
-     * Si los valores son inválidos o hay errores de parseo, retorna 0.
-     */
     @Transient
     public BigDecimal getHorasTrabajadas() {
-        System.out.println("→ getHorasTrabajadas() invocado");
-        
         if (horaInicioTicket == null || horaFinTicket == null) {
-            System.out.println("⚠️ horaInicioTicket o horaFinTicket es null");
             return BigDecimal.ZERO;
         }
-
         try {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("H:mm");
             LocalTime inicio = LocalTime.parse(horaInicioTicket, fmt);
-            LocalTime fin = LocalTime.parse(horaFinTicket, fmt);
-
-            Duration duracion = Duration.between(inicio, fin);
-            double horas = duracion.toMinutes() / 60.0;
-
-            System.out.println("✔ Horas trabajadas calculadas: " + horas);
-            return BigDecimal.valueOf(horas);
+            LocalTime fin    = LocalTime.parse(horaFinTicket,    fmt);
+            Duration dur     = Duration.between(inicio, fin);
+            return BigDecimal.valueOf(dur.toMinutes() / 60.0);
         } catch (DateTimeParseException e) {
-            System.err.println("❌ Error parseando horaInicioTicket='" + horaInicioTicket + "' o horaFinTicket='" + horaFinTicket + "'");
-            e.printStackTrace();
-            return BigDecimal.ZERO;
-        } catch (Exception ex) {
-            System.err.println("❌ Error inesperado al calcular horas trabajadas");
-            ex.printStackTrace();
             return BigDecimal.ZERO;
         }
     }

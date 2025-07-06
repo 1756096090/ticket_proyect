@@ -20,18 +20,18 @@ public class LlenarFacturaAction extends ViewBaseAction {
         // 2) Obtenemos los valores dependientes
         BigDecimal subtotal = factura.getSubtotal();
         BigDecimal iva      = factura.getIva();
-        BigDecimal impuesto = factura.getImpuesto();
+        BigDecimal total    = factura.getTotal();
 
-        // 3) Si ya está persistida, recálculo server-side…
+        // 3) Si ya está persistida, permitimos que el servidor recalcule todo
         if (factura.getIdFactura() != null) {
             getView().recalculateProperties();
         }
-        // 4) …si es nueva, notificamos manualmente cada valor al cliente
+        // 4) Si es nueva, notificamos manualmente cada valor al cliente
         else {
             getView().setValueNotifying("horasTrabajadas", valorHoras);
             getView().setValueNotifying("subtotal",          subtotal);
             getView().setValueNotifying("iva",               iva);
-            getView().setValueNotifying("impuesto",          impuesto);
+            getView().setValueNotifying("total",             total);
         }
 
         addMessage("Datos de factura llenados correctamente");

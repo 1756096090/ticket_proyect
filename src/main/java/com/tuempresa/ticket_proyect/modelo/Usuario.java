@@ -13,8 +13,7 @@ import lombok.*;
 @Entity
 @Tab(properties = "nombre, cedula, mail, activo")
 @View(members =
-    "Datos Personales { nombre, cedula; mail; activo; especialidad };" +
-    "Asignaciones         { asignaciones }"
+    "Datos Personales { nombre, cedula; mail; activo; especialidad };" 
 )
 @Getter @Setter
 public class Usuario {
