@@ -44,11 +44,10 @@ public class Asignacion implements Serializable {
     @DefaultValueCalculator(com.tuempresa.ticket_proyect.calculadores.FechaActualCalculator.class)
     private Date fechaAsignacion;
 
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIME)
+    @Column(length = 8, nullable = false)
     @DefaultValueCalculator(com.tuempresa.ticket_proyect.calculadores.HoraActualCalculator.class)
     @Stereotype("TIME")
-    private Date horaAsignacion;
+    private String horaAsignacion;
 
     @Column(length = 5)
     @Stereotype("TIME")
